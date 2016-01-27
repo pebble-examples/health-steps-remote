@@ -1,5 +1,5 @@
 var VERSION = "1.0";
-var DEBUG = true;
+var DEBUG = false;
 var NUM_ITEMS = 15;
 var NODE_SERVER_URL = '10.132.31.209:8080';
 
