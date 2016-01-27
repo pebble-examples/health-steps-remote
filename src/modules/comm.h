@@ -4,10 +4,13 @@
 
 #include "data.h"
 
+#include "../windows/main_window.h"
+
 typedef enum {
   AppKeyIndex = 0,
   AppKeyData,
-  AppKeyNumDataItems
+  AppKeyNumDataItems,
+  AppKeyJSReady
 } AppKey;
 
 void comm_init(int inbox, int outbox);

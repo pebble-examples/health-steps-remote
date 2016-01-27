@@ -36,7 +36,26 @@ static void outbox_sent_handler(DictionaryIterator *iter, void *context) {
   }
 }
 
+static void inbox_received_handler(DictionaryIterator *iter, void *context) {
+  Tuple *js_ready_t = dict_find(iter, AppKeyJSReady);
+  if(js_ready_t) {
+    // Check that it has been at least INTERVAL_MINUTES since the last upload
+    time_t now = time(NULL);
+    if(now - data_get_last_upload_time() > INTERVAL_MINUTES * 60) {
+      // Send the first data
+      comm_begin_upload();
+
+      // Remember the upload time
+      data_record_last_upload_time();
+      main_window_set_updated_time(now);
+    } else {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Last update was less than %d minutes ago", (int)INTERVAL_MINUTES);
+    }
+  }
+}
+
 void comm_init(int inbox, int outbox) {
+  app_message_register_inbox_received(inbox_received_handler);
   app_message_register_outbox_sent(outbox_sent_handler);
   app_message_open(inbox, outbox);
 }

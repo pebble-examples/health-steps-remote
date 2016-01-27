@@ -28,6 +28,8 @@ function ajax(url, type, callback) {
 
 Pebble.addEventListener('ready', function() {
   info('PebbleKit JS ready! Version ' + VERSION);
+
+  Pebble.sendAppMessage({'AppKeyJSReady': 0});
 });
 
 Pebble.addEventListener('appmessage', function(dict) {

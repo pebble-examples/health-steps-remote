@@ -39,6 +39,11 @@ void main_window_push() {
     .unload = window_unload,
   });
   window_stack_push(s_window, true);
+
+  // Show last updated time
+  if(persist_exists(PersistKeyLastUploadTime)) {
+    main_window_set_updated_time(data_get_last_upload_time());
+  }
 }
 
 void main_window_update_time(struct tm *tick_time) {
@@ -47,8 +52,7 @@ void main_window_update_time(struct tm *tick_time) {
   text_layer_set_text(s_time_layer, s_buffer);
 }
 
-void main_window_set_updated_time() {
-  time_t now = time(NULL);
+void main_window_set_updated_time(time_t now) {
   struct tm *time_now = localtime(&now);
 
   static char s_buffer[32];

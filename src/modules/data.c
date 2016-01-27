@@ -31,7 +31,7 @@ void data_reload_steps() {
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
   if(result == HealthServiceAccessibilityMaskAvailable) {
     uint32_t num_records = health_service_get_minute_history(minute_data, DATA_NUM_ENTRIES, &start, &end);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Got %d entries from the Health API", (int)num_records);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Got %d new entries from the Health API", (int)num_records);
 
     // Store it
     for(uint32_t i = 0; i < num_records; i++) {
@@ -46,4 +46,13 @@ void data_reload_steps() {
 
 int* data_get_steps_data() {
   return s_data;  
+}
+
+void data_record_last_upload_time() {
+  time_t now = time(NULL);
+  persist_write_int(PersistKeyLastUploadTime, (int)now);
+}
+
+time_t data_get_last_upload_time() {
+  return (time_t)persist_read_int(PersistKeyLastUploadTime);
 }

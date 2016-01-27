@@ -4,7 +4,9 @@
 
 Basic app that can send steps data to a remote server. Default behavior is to
 upload the last 15 minutes worth of minute data after that interval, but can be
-configured in `src/config.h`.
+configured in `src/config.h`. On first launch, the most recent data available is
+sent immediately, with subsequent launches checking that the interval has
+elapsed before sending data.
 
 
 ## How to use

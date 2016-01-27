@@ -17,7 +17,9 @@ static void upload_event() {
     APP_LOG(APP_LOG_LEVEL_INFO, "Beginning upload...");
     comm_begin_upload();
 
-    main_window_set_updated_time();
+    time_t now = time(NULL);
+    main_window_set_updated_time(now);
+    data_record_last_upload_time();
   } else {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Could not send data, connection unavailable");
   }
