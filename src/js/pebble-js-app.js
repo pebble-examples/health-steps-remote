@@ -1,9 +1,9 @@
 var VERSION = "1.0";
 var DEBUG = false;
-var NUM_ITEMS = 15;
 var NODE_SERVER_URL = '10.132.31.209:8080';
 
 var lastData = [];
+var numItems = 0;
 
 /********************************** Helpers ***********************************/
 
@@ -33,6 +33,11 @@ Pebble.addEventListener('ready', function() {
 Pebble.addEventListener('appmessage', function(dict) {
   debug('Got appmessage: ' + JSON.stringify(dict.payload));
 
+  if(dict.payload['AppKeyNumDataItems'] != undefined) {
+    numItems = dict.payload['AppKeyNumDataItems'];
+    debug('Number of items: ' + numItems);
+  }
+
   if(dict.payload['AppKeyIndex'] != undefined) {
     var index = dict.payload['AppKeyIndex'];
 
@@ -47,13 +52,13 @@ Pebble.addEventListener('appmessage', function(dict) {
     lastData[index] = value;
     debug('Got item ' + index + ': ' + value);
 
-    if(index == NUM_ITEMS - 1) {
+    if(index == numItems - 1) {
       // Last item, transmit to server
       info('Last item received. Uploading...');
 
       // Convert to string
       var str = '' + lastData[0];
-      for(var i = 1; i < NUM_ITEMS; i++) {
+      for(var i = 1; i < numItems; i++) {
         str += ',' + lastData[i];
       }
       info('Sending data string: ' + str);

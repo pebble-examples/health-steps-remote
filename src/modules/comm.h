@@ -6,7 +6,8 @@
 
 typedef enum {
   AppKeyIndex = 0,
-  AppKeyData
+  AppKeyData,
+  AppKeyNumDataItems
 } AppKey;
 
 void comm_init(int inbox, int outbox);

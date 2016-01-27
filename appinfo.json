@@ -11,7 +11,8 @@
   },
   "appKeys": {
     "AppKeyIndex": 0,
-    "AppKeyData": 1
+    "AppKeyData": 1,
+    "AppKeyNumDataItems": 2
   },
   "resources": {
     "media": []

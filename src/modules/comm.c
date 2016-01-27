@@ -10,6 +10,12 @@ static void send_data_item(int index) {
     dict_write_int(out, AppKeyIndex, &index, sizeof(int), true);
     dict_write_int(out, AppKeyData, &data[s_index], sizeof(int), true);
 
+    // Include the total number of data items
+    if(s_index == 0) {
+      const int num_items = DATA_NUM_ENTRIES;
+      dict_write_int(out, AppKeyNumDataItems, &num_items, sizeof(int), true);
+    }
+
     if(app_message_outbox_send() != APP_MSG_OK) {
       APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending message");
     }
