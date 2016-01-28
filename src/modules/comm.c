@@ -1,6 +1,6 @@
 #include "comm.h"
 
-static int s_index;
+static int s_index, s_num_items;
 
 static void send_data_item(int index) {
   int *data = data_get_steps_data();
@@ -12,8 +12,7 @@ static void send_data_item(int index) {
 
     // Include the total number of data items
     if(s_index == 0) {
-      const int num_items = DATA_NUM_ENTRIES;
-      dict_write_int(out, AppKeyNumDataItems, &num_items, sizeof(int), true);
+      dict_write_int(out, AppKeyNumDataItems, &s_num_items, sizeof(int), true);
     }
 
     if(app_message_outbox_send() != APP_MSG_OK) {
@@ -28,7 +27,7 @@ static void outbox_sent_handler(DictionaryIterator *iter, void *context) {
   // Last message was successful
   s_index++;
 
-  if(s_index < DATA_NUM_ENTRIES) {
+  if(s_index < s_num_items) {
     // Send next item
     send_data_item(s_index);
   } else {
@@ -43,7 +42,8 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
     time_t now = time(NULL);
     if(now - data_get_last_upload_time() > INTERVAL_MINUTES * 60) {
       // Send the first data
-      comm_begin_upload();
+      int num_items = data_reload_steps();
+      comm_begin_upload(num_items);
 
       // Remember the upload time
       data_record_last_upload_time();
@@ -60,7 +60,9 @@ void comm_init(int inbox, int outbox) {
   app_message_open(inbox, outbox);
 }
 
-void comm_begin_upload() {
+void comm_begin_upload(int num_items) {
   s_index = 0;
+  s_num_items = num_items;
+
   send_data_item(s_index);
 }

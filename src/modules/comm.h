@@ -15,4 +15,4 @@ typedef enum {
 
 void comm_init(int inbox, int outbox);
 
-void comm_begin_upload();
+void comm_begin_upload(int num_items);

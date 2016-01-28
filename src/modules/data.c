@@ -3,35 +3,37 @@
 static int *s_data;
 
 void data_init() {
-  s_data = (int*)malloc(DATA_NUM_ENTRIES * sizeof(int));
+  s_data = (int*)malloc(MAX_ENTRIES * sizeof(int));
 }
 
 void data_deinit() {
   free(s_data);
 }
 
-void data_reload_steps() {
+int data_reload_steps() {
   if(TEST) {
     // Use dummy test data
-    for(int i = 0; i < DATA_NUM_ENTRIES; i++) {
+    for(int i = 0; i < MAX_ENTRIES; i++) {
       s_data[i] = i * i;
     }
-    return;
+    return MAX_ENTRIES;
   }
 
   // Clear old data
-  data_deinit();
-  data_init();
-  HealthMinuteData *minute_data = (HealthMinuteData*)malloc(DATA_NUM_ENTRIES * sizeof(HealthMinuteData));
+  for(int i = 0; i < MAX_ENTRIES; i++) {
+    s_data[i] = 0;
+  }
+  HealthMinuteData *minute_data = (HealthMinuteData*)malloc(MAX_ENTRIES * sizeof(HealthMinuteData));
 
   time_t end = time(NULL);
-  time_t start = end - (DATA_NUM_ENTRIES * SECONDS_PER_MINUTE);
+  time_t start = end - (MAX_ENTRIES * SECONDS_PER_MINUTE);
 
   // Check data is available
+  uint32_t num_records = 0;
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
   if(result == HealthServiceAccessibilityMaskAvailable) {
-    uint32_t num_records = health_service_get_minute_history(minute_data, DATA_NUM_ENTRIES, &start, &end);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Got %d new entries from the Health API", (int)num_records);
+    num_records = health_service_get_minute_history(minute_data, MAX_ENTRIES, &start, &end);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Got %d/%d new entries from the Health API", (int)num_records, MAX_ENTRIES);
 
     // Store it
     for(uint32_t i = 0; i < num_records; i++) {
@@ -42,6 +44,7 @@ void data_reload_steps() {
   }
 
   free(minute_data);
+  return (int)num_records;
 }
 
 int* data_get_steps_data() {
