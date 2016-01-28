@@ -1,6 +1,6 @@
 #include "comm.h"
 
-static int s_index, s_num_items;
+static int s_index, s_num_records;
 
 static void send_data_item(int index) {
   int *data = data_get_steps_data();
@@ -12,7 +12,7 @@ static void send_data_item(int index) {
 
     // Include the total number of data items
     if(s_index == 0) {
-      dict_write_int(out, AppKeyNumDataItems, &s_num_items, sizeof(int), true);
+      dict_write_int(out, AppKeyNumDataItems, &s_num_records, sizeof(int), true);
     }
 
     if(app_message_outbox_send() != APP_MSG_OK) {
@@ -27,7 +27,7 @@ static void outbox_sent_handler(DictionaryIterator *iter, void *context) {
   // Last message was successful
   s_index++;
 
-  if(s_index < s_num_items) {
+  if(s_index < s_num_records) {
     // Send next item
     send_data_item(s_index);
   } else {
@@ -60,9 +60,9 @@ void comm_init(int inbox, int outbox) {
   app_message_open(inbox, outbox);
 }
 
-void comm_begin_upload(int num_items) {
+void comm_begin_upload(int num_records) {
   s_index = 0;
-  s_num_items = num_items;
+  s_num_records = num_records;
 
   send_data_item(s_index);
 }

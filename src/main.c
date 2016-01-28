@@ -10,12 +10,17 @@
 
 static void upload_event() {
   // Get last minute data
-  int num_steps = data_reload_steps();
+  int num_records = data_reload_steps();
+
+  if(num_records == 0) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "No new data");
+    return;
+  }
 
   // Send to JS
   if(connection_service_peek_pebble_app_connection()) {
     APP_LOG(APP_LOG_LEVEL_INFO, "Beginning upload...");
-    comm_begin_upload(num_steps);
+    comm_begin_upload(num_records);
 
     time_t now = time(NULL);
     main_window_set_updated_time(now);
