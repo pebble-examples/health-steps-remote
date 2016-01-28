@@ -18,7 +18,10 @@ function debug(content) {
 
 function onNewData(data) {
   var items = data.split(',');
-  info('Got data: ' + data + ' (' + items.length + ' items)');
+  var dateString = new Date().toString();
+  dateString = dateString.substring(dateString.indexOf(':') - 2);
+  dateString = dateString.substring(0, dateString.indexOf('G') - 1);
+  info(dateString + ' - Got data: ' + data + ' (' + items.length + ' items)');
 
   // Do stuff with the data
 }
