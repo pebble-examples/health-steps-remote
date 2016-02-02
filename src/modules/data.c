@@ -28,6 +28,10 @@ int data_reload_steps() {
   time_t end = time(NULL);
   time_t start = end - (MAX_ENTRIES * SECONDS_PER_MINUTE);
 
+  // Last 15 minutes may not be reliable
+  end -= (15 * SECONDS_PER_MINUTE);
+  start -= (15 * SECONDS_PER_MINUTE);
+
   // Check data is available
   uint32_t num_records = 0;
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
