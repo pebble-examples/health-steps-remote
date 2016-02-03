@@ -1,0 +1,24 @@
+{
+  "uuid": "CB3B214B-C7F4-4C71-A570-A0C67B2CBD3A",
+  "shortName": "Health Steps Remote",
+  "longName": "Health Steps Remote",
+  "companyName": "Pebble",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["basalt", "chalk"],
+  "watchapp": {
+    "watchface": true
+  },
+  "capabilities": [
+    "health"
+  ],
+  "appKeys": {
+    "AppKeyIndex": 0,
+    "AppKeyData": 1,
+    "AppKeyNumDataItems": 2,
+    "AppKeyJSReady": 3
+  },
+  "resources": {
+    "media": []
+  }
+}
