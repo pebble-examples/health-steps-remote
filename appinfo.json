@@ -9,6 +9,9 @@
   "watchapp": {
     "watchface": true
   },
+  "capabilities": [
+    "health"
+  ],
   "appKeys": {
     "AppKeyIndex": 0,
     "AppKeyData": 1,
