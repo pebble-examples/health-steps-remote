@@ -23,20 +23,20 @@ int data_reload_steps() {
   for(int i = 0; i < MAX_ENTRIES; i++) {
     s_data[i] = 0;
   }
-  HealthMinuteData *minute_data = (HealthMinuteData*)malloc(MAX_ENTRIES * sizeof(HealthMinuteData));
 
   time_t end = time(NULL);
   time_t start = end - (MAX_ENTRIES * SECONDS_PER_MINUTE);
 
   // Last 15 minutes may not be reliable
-  end -= (15 * SECONDS_PER_MINUTE);
   start -= (15 * SECONDS_PER_MINUTE);
+  end -= (15 * SECONDS_PER_MINUTE);
 
   // Check data is available
   uint32_t num_records = 0;
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
   if(result == HealthServiceAccessibilityMaskAvailable) {
-    num_records = health_service_get_minute_history(minute_data, MAX_ENTRIES, &start, &end);
+    HealthMinuteData minute_data[MAX_ENTRIES];
+    num_records = health_service_get_minute_history(&minute_data[0], sizeof(minute_data), &start, &end);
     APP_LOG(APP_LOG_LEVEL_INFO, "Got %d/%d new entries from the Health API", (int)num_records, MAX_ENTRIES);
 
     // Store it
@@ -44,10 +44,8 @@ int data_reload_steps() {
       s_data[i] = (int)minute_data[i].steps;
     }
   } else {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "No data available from %d to %d!", (int)start, (int)end);
+    APP_LOG(APP_LOG_LEVEL_INFO, "No data available from %d to %d!", (int)start, (int)end);
   }
-
-  free(minute_data);
   return (int)num_records;
 }
 
