@@ -60,9 +60,13 @@ void main_window_update_time(struct tm *tick_time) {
 }
 
 void main_window_update_steps(int steps) {
-  static char s_buffer[32];
-  snprintf(s_buffer, sizeof(s_buffer), "%d steps today", steps);
-  text_layer_set_text(s_steps_layer, s_buffer);
+  if(steps > 0) {
+    static char s_buffer[32];
+    snprintf(s_buffer, sizeof(s_buffer), "%d steps today", steps);
+    text_layer_set_text(s_steps_layer, s_buffer);
+  } else {
+    text_layer_set_text(s_steps_layer, "No steps today.");
+  }
 }
 
 void main_window_set_updated_time(time_t now) {
