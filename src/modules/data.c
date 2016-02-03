@@ -36,7 +36,7 @@ int data_reload_steps() {
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
   if(result == HealthServiceAccessibilityMaskAvailable) {
     HealthMinuteData minute_data[MAX_ENTRIES];
-    num_records = health_service_get_minute_history(&minute_data[0], sizeof(minute_data), &start, &end);
+    num_records = health_service_get_minute_history(&minute_data[0], MAX_ENTRIES, &start, &end);
     APP_LOG(APP_LOG_LEVEL_INFO, "Got %d/%d new entries from the Health API", (int)num_records, MAX_ENTRIES);
 
     // Store it
