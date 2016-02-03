@@ -8,10 +8,6 @@ typedef enum {
   PersistKeyLastUploadTime = 0
 } PersistKey;
 
-void data_init();
-
-void data_deinit();
-
 int data_reload_steps();
 
 int* data_get_steps_data();

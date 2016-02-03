@@ -35,7 +35,6 @@ static void tick_handler(struct tm *tick_time, TimeUnits changed) {
 }
 
 static void init() {
-  data_init();
   comm_init(64, 64);
 
   main_window_push();
@@ -44,9 +43,7 @@ static void init() {
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }
 
-static void deinit() {
-  data_deinit();
-}
+static void deinit() { }
 
 int main() {
   init();

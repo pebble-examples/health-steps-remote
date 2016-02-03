@@ -1,14 +1,6 @@
 #include "data.h"
 
-static int *s_data;
-
-void data_init() {
-  s_data = (int*)malloc(MAX_ENTRIES * sizeof(int));
-}
-
-void data_deinit() {
-  free(s_data);
-}
+static int s_data[MAX_ENTRIES];
 
 int data_reload_steps() {
   if(TEST) {
@@ -27,7 +19,7 @@ int data_reload_steps() {
   time_t end = time(NULL);
   time_t start = end - (MAX_ENTRIES * SECONDS_PER_MINUTE);
 
-  // Last 15 minutes may not be reliable
+  // Last 15 minutes may not available
   start -= (15 * SECONDS_PER_MINUTE);
   end -= (15 * SECONDS_PER_MINUTE);
 
@@ -35,9 +27,9 @@ int data_reload_steps() {
   uint32_t num_records = 0;
   HealthServiceAccessibilityMask result = health_service_metric_accessible(HealthMetricStepCount, start, end);
   if(result == HealthServiceAccessibilityMaskAvailable) {
+    // Read the data
     HealthMinuteData minute_data[MAX_ENTRIES];
     num_records = health_service_get_minute_history(&minute_data[0], MAX_ENTRIES, &start, &end);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Got %d/%d new entries from the Health API", (int)num_records, MAX_ENTRIES);
 
     // Store it
     for(uint32_t i = 0; i < num_records; i++) {
@@ -46,6 +38,8 @@ int data_reload_steps() {
   } else {
     APP_LOG(APP_LOG_LEVEL_INFO, "No data available from %d to %d!", (int)start, (int)end);
   }
+
+  APP_LOG(APP_LOG_LEVEL_INFO, "Got %d/%d new entries from the Health API", (int)num_records, MAX_ENTRIES);
   return (int)num_records;
 }
 
