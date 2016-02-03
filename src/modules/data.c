@@ -19,7 +19,7 @@ int data_reload_steps() {
   time_t end = time(NULL);
   time_t start = end - (MAX_ENTRIES * SECONDS_PER_MINUTE);
 
-  // Last 15 minutes may not available
+  // Last 15 minutes may not be available
   start -= (15 * SECONDS_PER_MINUTE);
   end -= (15 * SECONDS_PER_MINUTE);
 
